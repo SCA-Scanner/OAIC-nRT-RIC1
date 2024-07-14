@@ -117,7 +117,7 @@ def get_vulnerabilities_by_directory(data, tool):
                 continue
             for vuln in vulnTarget:
                 vuln["Path"] = path
-                directory = path.split('/')[1]  # Extract the first part of the path after the root
+                directory = path.split('/')[0]  # Extract the first part of the path after the root
                 vulnerabilities_by_directory[directory].append(vuln)
 
     # For Snyk we load the data as JSON
@@ -143,7 +143,7 @@ def get_vulnerabilities_by_directory(data, tool):
                             print("Snyk: Skipping:" + path)
                             continue
                         for vuln in vulnList:
-                            directory = path.split('/')[1]  # Extract the first part of the path after the root
+                            directory = path.split('/')[0]  # Extract the first part of the path after the root
                             vulnerabilities_by_directory[directory].append(vuln)
                             
     return vulnerabilities_by_directory
