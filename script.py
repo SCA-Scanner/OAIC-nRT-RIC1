@@ -641,7 +641,7 @@ def main():
     'grey': '#999999'
     }
     
-    plt.figure(figsize=(6, 4))  # Adjust the figure size to be more appropriate for a single bar
+    plt.figure(figsize=(7, 5))  # Adjust the figure size to be more appropriate for a single bar
     plt.bar(total_vulnerabilities_ric.keys(), total_vulnerabilities_ric.values(), color=color_blind_friendly_palette['blue'], width=0.2)
     plt.title(f'Total Number of Vulnerabilities per RIC (Tool: {tool_name})')
     plt.xlabel('RIC')
@@ -680,7 +680,7 @@ def main():
         plt.savefig(f'severity_distribution_{ric}_{tool_name}.png', dpi=300)
         plt.show()
 
-    plt.figure(figsize=(3, 5))
+    plt.figure(figsize=(7, 5))
     plt.bar(vulnerable_packages_per_ric.keys(), vulnerable_packages_per_ric.values(), color=color_blind_friendly_palette['yellow'], width=0.5)
     plt.title(f'Distribution of Vulnerable Dependency Packages per RIC (Tool: {tool_name})')
     plt.xlabel('RIC')
