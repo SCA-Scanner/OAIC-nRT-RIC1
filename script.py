@@ -132,7 +132,7 @@ def get_vulnerabilities_by_directory(data, tool):
                         print("Snyk: Skipping:" + path)
                         continue
                     for vuln in vulnList:
-                        directory = path.split('/')[1]  # Extract the first part of the path after the root
+                        directory = path.split('/')[0]  # Extract the first part of the path after the root
                         vulnerabilities_by_directory[directory].append(vuln)
                 else:
                     if target == 'vulnerabilities':
