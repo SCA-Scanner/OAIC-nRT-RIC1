@@ -421,7 +421,7 @@ def cvss_distribution(cvss_data):
     critical_cvss_per_ric_repo = dict.fromkeys(cvss_data.keys())
     cve_per_ric_repo = dict.fromkeys(cvss_data.keys())
     none_counter = 0
-    
+     
     for ric in cvss_data.keys():
         low_cvss_per_ric_repo[ric] = dict.fromkeys(cvss_data[ric].keys())
         medium_cvss_per_ric_repo[ric] = dict.fromkeys(cvss_data[ric].keys())
