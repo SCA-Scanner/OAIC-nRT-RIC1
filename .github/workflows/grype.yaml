@@ -1,5 +1,5 @@
 name: Grype SCA
-
+ 
 on:
     push:
         branches: [ "main" ]
@@ -46,7 +46,6 @@ jobs:
     uses: t-kolev/Continuous-SCA-Scanning/.github/workflows/grype.yaml@main
 
 
-    name: Grype scan
 
   Data_Analysis:
     name: Data Analysis
