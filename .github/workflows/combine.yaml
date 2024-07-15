@@ -98,10 +98,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
+      
       - name: Running the Python Script
         run: python new_script.py scan/results.json scan/snyk-results.json scan/trivy-results.json "Grype.txt" "Snyk.txt" "Trivy.txt" "OAIC"
-
+  
       - name: Save the JSON vulnerability report to an artifact
         uses: actions/upload-artifact@v4
         with:

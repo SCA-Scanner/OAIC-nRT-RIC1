@@ -576,15 +576,8 @@ def generate_plots(total_vulnerabilities_ric, vulnerabilities_per_repo, severity
         plt.savefig(f'vulnerable_packages_per_repo_{ric}.png', dpi=300)
         plt.show()
 
-def main():
-    parser = argparse.ArgumentParser(description='Format SCA tool data')
-    parser.add_argument('data_files', nargs='+', help='Paths to the data files in JSON format')
-    parser.add_argument('tools', nargs='+', help='SCA tools used')
-    parser.add_argument('ric', type=str, help='RIC name')
-
-    args = parser.parse_args()
-
-    for data_file, tool in zip(args.data_files, args.tools):
+def main(data_files, tools, ric):
+    for data_file, tool in zip(data_files, tools):
         # Load the data file
         with open(data_file, 'r') as file:
             data = file.read()
@@ -593,11 +586,11 @@ def main():
         vulnerabilities_by_directory = get_vulnerabilities_by_directory(data, tool)
 
         # Save vulnerabilities by directory
-        base_dir = f"./{args.ric}"
+        base_dir = f"./{ric}"
         save_vulnerabilities_by_directory(vulnerabilities_by_directory, tool, base_dir)
 
     # Dump scan results
-    sca_results = dump_scan_results([args.ric], [args.tool])
+    sca_results = dump_scan_results([ric], tools)
     sca_cvecvss_dependencies_results = extract_cves(sca_results)
 
     # Count CVEs
@@ -619,27 +612,38 @@ def main():
     total_vulnerabilities_ric = count_total_cves(low_cvss_per_ric_repo, medium_cvss_per_ric_repo, high_cvss_per_ric_repo, critical_cvss_per_ric_repo)
 
     # Calculate vulnerabilities per repository
-    vulnerabilities_per_repo = {args.ric: {repo: len(cves_without_dups) for repo, (_, cves_without_dups) in repos.items()} for args.ric, repos in cve_per_ric_repo.items()}
+    vulnerabilities_per_repo = {ric: {repo: len(cves_without_dups) for repo, (_, cves_without_dups) in repos.items()} for ric, repos in cve_per_ric_repo.items()}
 
     # Calculate severity distribution
     severity_distribution = {
-        args.ric: {
-            'low': sum(len(low_cvss_per_ric_repo[args.ric][repo][1]) for repo in repos.keys()),
-            'medium': sum(len(medium_cvss_per_ric_repo[args.ric][repo][1]) for repo in repos.keys()),
-            'high': sum(len(high_cvss_per_ric_repo[args.ric][repo][1]) for repo in repos.keys()),
-            'critical': sum(len(critical_cvss_per_ric_repo[args.ric][repo][1]) for repo in repos.keys())
+        ric: {
+            'low': sum(len(low_cvss_per_ric_repo[ric][repo][1]) for repo in repos.keys()),
+            'medium': sum(len(medium_cvss_per_ric_repo[ric][repo][1]) for repo in repos.keys()),
+            'high': sum(len(high_cvss_per_ric_repo[ric][repo][1]) for repo in repos.keys()),
+            'critical': sum(len(critical_cvss_per_ric_repo[ric][repo][1]) for repo in repos.keys())
         }
-        for args.ric, repos in sca_cvecvss_dependencies_results.items()
+        for ric, repos in sca_cvecvss_dependencies_results.items()
     }
 
     # Calculate vulnerable packages per RIC
-    vulnerable_packages_per_ric = {args.ric: len(packages) for args.ric, packages in packages_per_ric.items()}
+    vulnerable_packages_per_ric = {ric: len(packages) for ric, packages in packages_per_ric.items()}
 
     # Calculate vulnerable packages per repository
-    vulnerable_packages_per_repo = {args.ric: {repo: packages_info[0]['unique_packages'] for repo, packages_info in repos.items()} for args.ric, repos in packages_per_ric_repo.items()}
+    vulnerable_packages_per_repo = {ric: {repo: packages_info[0]['unique_packages'] for repo, packages_info in repos.items()} for ric, repos in packages_per_ric_repo.items()}
 
     # Generate plots
     generate_plots(total_vulnerabilities_ric, vulnerabilities_per_repo, severity_distribution, vulnerable_packages_per_ric, vulnerable_packages_per_repo)
 
+
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Process SCA tool data")
+    parser.add_argument('data_files', nargs='+', help='Paths to the data files in JSON format')
+    parser.add_argument('tools', nargs='+', help='SCA tools used')
+    parser.add_argument('ric', type=str, help='RIC name')
+
+    args = parser.parse_args()
+
+    if len(args.data_files) != len(args.tools):
+        raise ValueError("The number of data files and tools must be the same")
+
+    main(args.data_files, args.tools, args.ric)
