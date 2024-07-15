@@ -72,19 +72,19 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Download Grype results
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: grype-results
           path: scan/
 
       - name: Download Snyk results
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: snyk-results
           path: scan/
 
       - name: Download Trivy results
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: trivy-results
           path: scan/
@@ -103,13 +103,13 @@ jobs:
         run: python new_script.py scan/grype-results.json scan/snyk-results.json scan/trivy-results.json "Grype.txt" "Snyk.txt" "Trivy.txt" "OAIC"
 
       - name: Save the JSON vulnerability report to an artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: results_data_analysis
           path: sca_results.json
 
       - name: Save plots to artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: plots
           path: "*.png"
